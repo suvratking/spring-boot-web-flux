@@ -25,7 +25,7 @@ public class ProductHandler {
 	
 	public Mono<ServerResponse> getAllProd(ServerRequest request){
 		var prods = productRepository.findAll().log().delayElements(Duration.ofSeconds(1));
-		var prod = prods.map(this::productDtoMappig);
+		var prod = prods.map(this::productDtoMapping);
 		System.out.println(prod);
 		return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(prod, ProdDto.class);
 	}
@@ -33,7 +33,7 @@ public class ProductHandler {
 	public Mono<ServerResponse> getById(ServerRequest request){
 		var id = request.pathVariable("id");
 		var pr = productRepository.findById(new ObjectId(id)).log();
-		var mono = pr.map(this::productDtoMappig);
+		var mono = pr.map(this::productDtoMapping);
 		return ServerResponse.ok().body(mono, ProdDto.class);
 	}
 	
@@ -61,7 +61,7 @@ public class ProductHandler {
 		return ServerResponse.ok().body(productRepository.deleteById(new ObjectId(id)).log(), Response.class);
 	}
 	
-	private ProdDto productDtoMappig(Product product) {
+	private ProdDto productDtoMapping(Product product) {
 		return ProdDto.builder().
 				id(product.getId().toString()).
 				name(product.getName()).
